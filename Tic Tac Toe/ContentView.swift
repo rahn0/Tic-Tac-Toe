@@ -18,7 +18,9 @@ struct ContentView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
+            // Creates the playing grid
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(120), spacing: 15), count: 3), spacing: 15, content: {
+                //Creates the cell tiles
                 ForEach(0..<9) { index in
                     ZStack {
                         Color.blue
@@ -30,6 +32,7 @@ struct ContentView: View {
                     }
                     .frame(width: 120, height: 120, alignment: .center)
                     .cornerRadius(30)
+                    // Alternates between Xs and Os
                     .onTapGesture {
                         withAnimation(Animation.default) {
                             if moves[index] == "" {
@@ -38,6 +41,7 @@ struct ContentView: View {
                             }
                         }
                     }
+                    // Adds the rotation effect/transition
                     .rotation3DEffect(
                         .init(degrees: moves[index] != "" ? 180 : 0),
                         axis: (x: 0.0, y: 1.0, z: 0.0)
@@ -46,8 +50,10 @@ struct ContentView: View {
             })
         }
         .preferredColorScheme(.dark)
+        // Alerts about end of game and play again
         .alert(isPresented: $gameOver, content: {
             Alert(title: Text(winMessage), dismissButton: .destructive(Text("Play again"), action: {
+                // Resets the game
                 withAnimation(Animation.default) {
                     moves = Array(repeating: "", count: 9)
                     gameOver = false
@@ -59,6 +65,7 @@ struct ContentView: View {
         })
     }
     
+    // Checks for winner through possible winning outcomes
     private func checkForWinner() {
         checkLine(a: 0, b: 1, c: 2) // first row
         checkLine(a: 3, b: 4, c: 5) // second row
@@ -68,6 +75,7 @@ struct ContentView: View {
         checkLine(a: 2, b: 5, c: 8) // third column
         checkLine(a: 0, b: 4, c: 8) // left to right diagonal
         checkLine(a: 2, b: 4, c: 6) // right to left diagonal
+        // Checks if game is a tie
         if !(gameOver || moves.contains("")) {
             winMessage = "Cat's Game"
             gameOver = true
